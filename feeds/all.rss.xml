@@ -1,5 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CodeShard</title><link>http://codeshard.github.io/</link><description></description><atom:link href="http://codeshard.github.io/feeds/all.rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 04 Jun 2014 08:20:00 -0400</lastBuildDate><item><title>Hyperlinks: make them bulletproof!</title><link>http://codeshard.github.io/hyperlinks-make-them-bulletproof.html</link><description>&lt;p&gt;A few days ago, reading the &lt;a class="reference external" href="http://swlx.cubava.cu"&gt;blog&lt;/a&gt; of a great friend of mine, I noticed the buttons used in the comments systems doesn't trigger any action, but the text within them, this means: the link wasn't the buttons! I make him notice this small detail, and, as always, I'm not sit on the fence, I helped him with a small snippet of code.&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CodeShard</title><link>http://codeshard.github.io/</link><description></description><atom:link href="http://codeshard.github.io/feeds/all.rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 21 Jul 2014 08:20:00 -0400</lastBuildDate><item><title>DataTables and Django: Finally with Ajax!</title><link>http://codeshard.github.io/datatables-and-django-finally-with-ajax.html</link><description>&lt;p&gt;&lt;a class="reference external" href="https://djangoproject.com"&gt;Django&lt;/a&gt; and &lt;a class="reference external" href="http://www.datatables.net/"&gt;DataTables&lt;/a&gt; with Ajax: my nemesis during the last week. But after several attempts and burned my eyes in &lt;a class="reference external" href="http://stackoverflow.com/"&gt;StackOverflow&lt;/a&gt; and Django &lt;a class="reference external" href="http://django.readthedocs.org/en/latest/releases/1.7.html"&gt;Documentation&lt;/a&gt; I finally reach the solution. How I solved it? Just reading carefully the json outputted and the &lt;a class="reference external" href="http://www.datatables.net/new/1.10"&gt;changelog&lt;/a&gt; of DataTables 1.10 and how them now process the json and ajax requests. If you are reading this, perhaps you don't have any idea how Django or DataTables works, but over the Internet are a lot of great tutorials, so, I wont explain how work with them.
+Let's begin. You should have a model defined, something like:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;models.py&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.db&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;MyModel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;someAttr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CharField&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__unicode__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;someAttr&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then, you should define a view, returning a queryset in json format.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;views.py&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.http&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HttpResponse&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.core&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;serializers&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.models&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;MyModel&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;myModel_asJson&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;object_list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;MyModel&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;objects&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;all&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="c"&gt;#or any kind of queryset&lt;/span&gt;
+    &lt;span class="n"&gt;json&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;serializers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;serialize&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;json&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sec_list&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;HttpResponse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;content_type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;application/json&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Here, you must define a url for your ajax view, as follows:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;urls.py&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.conf.urls&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;patterns&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;
+
+&lt;span class="n"&gt;urlpatterns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;patterns&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;myapp.views&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                    &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;regex&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;r&amp;#39;^$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                    &lt;span class="n"&gt;view&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;myModel_asJson&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                    &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;my_ajax_url&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then in your template, you should define a table and the javascript function, something like:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;template.html&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;table&lt;/span&gt; &lt;span class="na"&gt;cellpadding=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;cellspacing=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;border=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;id=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;example&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+     &lt;span class="nt"&gt;&amp;lt;thead&amp;gt;&lt;/span&gt;
+         &lt;span class="nt"&gt;&amp;lt;tr&amp;gt;&amp;lt;th&amp;gt;&lt;/span&gt;My Attr Heading&lt;span class="nt"&gt;&amp;lt;/th&amp;gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+     &lt;span class="nt"&gt;&amp;lt;/thead&amp;gt;&lt;/span&gt;
+     &lt;span class="nt"&gt;&amp;lt;tbody&amp;gt;&amp;lt;/tbody&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;/table&amp;gt;&lt;/span&gt;
+
+
+&lt;span class="nt"&gt;&amp;lt;script &lt;/span&gt;&lt;span class="na"&gt;type=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;text/javascript&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;language=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;javascript&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;class=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;init&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+     &lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;ready&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+         &lt;span class="nx"&gt;$&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;#example&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;dataTable&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+             &lt;span class="s2"&gt;&amp;quot;processing&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+             &lt;span class="s2"&gt;&amp;quot;ajax&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                 &lt;span class="s2"&gt;&amp;quot;processing&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                 &lt;span class="s2"&gt;&amp;quot;url&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;{% url &amp;#39;my_ajax_url&amp;#39; %}&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                 &lt;span class="s2"&gt;&amp;quot;dataSrc&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+             &lt;span class="p"&gt;},&lt;/span&gt;
+
+             &lt;span class="s2"&gt;&amp;quot;columns&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+                     &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;data&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;fields.someAttr },&lt;/span&gt;
+&lt;span class="s2"&gt;                     { &amp;quot;&lt;/span&gt;&lt;span class="nx"&gt;data&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;: &amp;quot;&lt;/span&gt;&lt;span class="nx"&gt;pk&lt;/span&gt;&lt;span class="err"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+                 &lt;span class="p"&gt;]&lt;/span&gt;
+         &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+ &lt;span class="nt"&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Notice that &lt;em&gt;dataSrc&lt;/em&gt; is empty due to the format of the json outputted by Django.You should also read how serialize natural keys in Django, in case you have foreign keys in your models. It is simple, but the documentation explain it very clearly:
+Just add a method to the model itself:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;natural_key&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;my_natural_key&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This way you assure your json follows the foreing keys values and not the foreign key itself(which means the integer value).&lt;/p&gt;
+&lt;p&gt;And you got it! Or I hope so. The example above works for me, I wish it be self-explanatory, at least, more than other examples over the Internet.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Ozkar L. Garcell</dc:creator><pubDate>Mon, 21 Jul 2014 08:20:00 -0400</pubDate><guid>tag:codeshard.github.io,2014-07-21:datatables-and-django-finally-with-ajax.html</guid><category>articles</category><category>django</category><category>datatables</category><category>ajax</category></item><item><title>Hyperlinks: make them bulletproof!</title><link>http://codeshard.github.io/hyperlinks-make-them-bulletproof.html</link><description>&lt;p&gt;A few days ago, reading the &lt;a class="reference external" href="http://swlx.cubava.cu"&gt;blog&lt;/a&gt; of a great friend of mine, I noticed the buttons used in the comments systems doesn't trigger any action, but the text within them, this means: the link wasn't the buttons! I make him notice this small detail, and, as always, I'm not sit on the fence, I helped him with a small snippet of code.&lt;/p&gt;
 &lt;p&gt;This make me think of a lot of webs over the Internet where the hyperlinks are hard to find or drive us to nowhere. There are a few standars or guidelines to follow when making your links appropiate and effective. This gonna lead that your users can achieve more easily their goals finding information in your website or blog, positively affecting their &lt;a class="reference external" href="http://en.wikipedia.org/wiki/User_experience"&gt;UX&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;This is a small excerpt of recomendations by Jakob Nielsen's &lt;a class="reference external" href="https://www.nngroup.com/"&gt;AlertBox&lt;/a&gt; and &lt;a class="reference external" href="http://www.usability.gov/"&gt;usability.gov&lt;/a&gt;:&lt;/p&gt;
 &lt;ol class="arabic simple"&gt;
