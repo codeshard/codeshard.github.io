@@ -13,15 +13,16 @@
     <!-- End Metas -->
 
     <!-- CSS -->
-    <link href="http://codeshard.github.io/theme/css/poole.css" rel="stylesheet">
-    <link href="http://codeshard.github.io/theme/css/syntax.css" rel="stylesheet">
-    <link href="http://codeshard.github.io/theme/css/hyde.css" rel="stylesheet">
-    <link href="http://codeshard.github.io/theme/css/pygments.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://127.0.0.1:8000/theme/css/poole.css" rel="stylesheet">
+    <link href="http://127.0.0.1:8000/theme/css/syntax.css" rel="stylesheet">
+    <link href="http://127.0.0.1:8000/theme/css/hyde.css" rel="stylesheet">
+    <link href="http://127.0.0.1:8000/theme/css/pygments.css" rel="stylesheet">
+    <link href="http://127.0.0.1:8000/theme/css/main.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- End CSS -->
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="http://codeshard.github.io/theme/images/favicon.ico">
+    <link rel="shortcut icon" href="http://127.0.0.1:8000/theme/images/favicon.ico">
     <!-- Favicon -->
 
     <title>DataTables and Django: Finally with Ajax!</title>
@@ -32,11 +33,11 @@
     <div class="sidebar">
       <div class="container sidebar-sticky">
         <div class="sidebar-about">
-          <img class="avatar" height="220" src="http://codeshard.github.io/theme/images/ozkar.jpg" width="220" alt="Ozkar L. Garcell">
+          <img class="avatar" height="220" src="http://127.0.0.1:8000/theme/images/ozkar.jpg" width="220" alt="Ozkar L. Garcell">
           <ul class="sidebar-nav">
                                           <li class="sidebar-nav-item"><a href='http://github.com/codeshard'><i class="fa fa-github"></i></a></li>
                               <li class="sidebar-nav-item"><a href='https://plus.google.com/111574746249201438293'><i class="fa fa-google-plus"></i></a></li>
-                                      <li class="sidebar-nav-item"><a href="http://codeshard.github.io/feeds/all.rss.xml"><span class="fa fa-rss"></span></a></li>
+                                      <li class="sidebar-nav-item"><a href="http://127.0.0.1:8000/feeds/all.rss.xml"><span class="fa fa-rss"></span></a></li>
           </ul>
         </div>
         <ul class="sidebar-nav">
@@ -53,8 +54,8 @@
 
     <!-- Container -->
     <div class="content container">
-        <h1 class="post-title"><a href="http://codeshard.github.io/datatables-and-django-finally-with-ajax.html" rel="bookmark" title="Permalink to DataTables and Django: Finally with Ajax!"> DataTables and Django: Finally with Ajax!</a></h1>
-  <p class="message"><i class="fa fa-calendar"></i> Mon 21 July 2014 --  <i class="fa fa-tag"></i>  <a href="http://codeshard.github.io/tag/articles.html">articles</a>  /   <a href="http://codeshard.github.io/tag/django.html">django</a>  /   <a href="http://codeshard.github.io/tag/datatables.html">datatables</a>  /   <a href="http://codeshard.github.io/tag/ajax.html">ajax</a>    </p>
+        <h1 class="post-title"><a href="http://127.0.0.1:8000/datatables-and-django-finally-with-ajax.html" rel="bookmark" title="Permalink to DataTables and Django: Finally with Ajax!"> DataTables and Django: Finally with Ajax!</a></h1>
+  <p class="message"><i class="fa fa-calendar"></i> Mon 21 July 2014 --  <i class="fa fa-tag"></i>  <a href="http://127.0.0.1:8000/tag/articles.html">articles</a>  /   <a href="http://127.0.0.1:8000/tag/django.html">django</a>  /   <a href="http://127.0.0.1:8000/tag/datatables.html">datatables</a>  /   <a href="http://127.0.0.1:8000/tag/ajax.html">ajax</a>    </p>
   <p class="article"><p><a class="reference external" href="https://djangoproject.com">Django</a> and <a class="reference external" href="http://www.datatables.net/">DataTables</a> with Ajax: my nemesis during the last week. But after several attempts and burned my eyes in <a class="reference external" href="http://stackoverflow.com/">StackOverflow</a> and Django <a class="reference external" href="http://django.readthedocs.org/en/latest/releases/1.7.html">Documentation</a> I finally reach the solution. How I solved it? Just reading carefully the json outputted and the <a class="reference external" href="http://www.datatables.net/new/1.10">changelog</a> of DataTables 1.10 and how them now process the json and ajax requests. If you are reading this, perhaps you don't have any idea how Django or DataTables works, but over the Internet are a lot of great tutorials, so, I wont explain how work with them.
 Let's begin. You should have a model defined, something like:</p>
 <p><em>models.py</em></p>
@@ -135,7 +136,7 @@ Just add a method to the model itself:</p>
             /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
             var disqus_shortname = 'codeshard'; // required: replace example with your forum shortname
             var disqus_identifier = 'datatables-and-django-finally-with-ajax';
-            var disqus_url = 'http://codeshard.github.io/datatables-and-django-finally-with-ajax.html';
+            var disqus_url = 'http://127.0.0.1:8000/datatables-and-django-finally-with-ajax.html';
 
             /* * * DON'T EDIT BELOW THIS LINE * * */
             (function () {
